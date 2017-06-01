@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/models/bot.js"],"names":["bot"],"mappings":";;;;;AAAA,IAAMA,MAAM,CAAC,KAAD,EAAQ,KAAR,CAAZ;AACA;AACA;AACA;kBACeA,G","file":"bot.js","sourcesContent":["const bot = ['new', 'bot'];\n// const bot = function() {\n//\n// };\nexport default bot;\n"]}
