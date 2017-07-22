@@ -27,9 +27,9 @@ app.use(bodyParser.json({
 initializeDb(db => {
 
     // internal middleware
-    app.use(middleware({config, db}));
+    app.use(middleware({ config, db }));
 
-    app.use('/api', api({config, db}));
+    app.use('/api', api({ config, db }));
 
 
     app.server.listen(process.env.PORT || config.port);
