@@ -1,5 +1,7 @@
 import { version } from '../../package.json';
 import { Router } from "express";
+import _ from 'lodash';
+import tracksDetails from '../models/tracks.js';
 import env from 'node-env-file';
 import * as s3 from "s3";
 
@@ -34,7 +36,14 @@ export default ({ config, db }) => {
     function getListOfTracks(res) {
         let list = s3Client.listObjects(params);
         list.on('data', (data) => {
-            res.send(data);
+            let tempResult;
+            data.forEach((element) => {
+                let tempTrackInfo = tracksDetails.find((el) => {
+                    return el.ID === element.Key;
+                });
+                tempResult.push(_.merge(tempTrackInfo, element));
+            }, this);
+            res.send(tempResult);
         });
     }
 
