@@ -25,16 +25,25 @@ export default ({ config, db }) => {
     });
 
     api.get('/tracks/:id', (req, res) => {
-
+        getTrackById(res, req.params.id);
     });
 
     return api;
 
     // talk to S3
     function getListOfTracks(res) {
-        const list = s3Client.listObjects(params);
+        let list = s3Client.listObjects(params);
         list.on('data', (data) => {
             res.send(data);
         });
+    }
+
+    function getTrackById(res, key) {
+        let params = {
+            Bucket: 'demo-app-audio-tracks',
+            Key: key
+        };
+        let downloadStream = s3Client.downloadStream(params);
+        downloadStream.pipe(res);
     }
 };
