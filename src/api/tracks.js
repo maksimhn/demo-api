@@ -36,14 +36,15 @@ export default ({ config, db }) => {
     function getListOfTracks(res) {
         let list = s3Client.listObjects(params);
         list.on('data', (data) => {
-            let tempResult;
-            data.forEach((element) => {
+            let tempResult = [];
+            data.Contents.forEach((element) => {
                 let tempTrackInfo = tracksDetails.find((el) => {
                     return el.ID === element.Key;
                 });
                 tempResult.push(_.merge(tempTrackInfo, element));
             }, this);
-            res.send(tempResult);
+            data.Contents = tempResult;
+            res.send(data);
         });
     }
 
