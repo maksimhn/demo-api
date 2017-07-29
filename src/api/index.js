@@ -11,7 +11,7 @@ export default ({ config, db }) => {
 
     api.use('/music', tracks({ config, db }));
 
-    app.use('/image', image({ config, db }));
+    api.use('/image', image({ config, db }));
 
     return api;
 }
