@@ -24,8 +24,8 @@ export default ({ config, db }) => {
     let api = Router();
 
     api.post('/upload', upload.any(), (req, res) => {
-        console.log('req is: ', req);
-        res.status(200).json(req.files);
+        res.status(200);
+		deleteAllFiles();
     });
 
     function deleteAllFiles() {
