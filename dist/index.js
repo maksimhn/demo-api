@@ -32,17 +32,13 @@ var _middleware = require('./middleware');
 
 var _middleware2 = _interopRequireDefault(_middleware);
 
-var _api = require('./api');
+var _index = require('./api/index');
 
-var _api2 = _interopRequireDefault(_api);
+var _index2 = _interopRequireDefault(_index);
 
 var _config = require('./config.json');
 
 var _config2 = _interopRequireDefault(_config);
-
-var _bot = require('./api/bot');
-
-var _bot2 = _interopRequireDefault(_bot);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
 
@@ -67,16 +63,7 @@ app.use(_bodyParser2.default.json({
     // internal middleware
     app.use((0, _middleware2.default)({ config: _config2.default, db: db }));
 
-    // api router
-    app.use('/api', function (req, res, next) {
-        res.send("asd");
-    });
-
-    // app.use('/bot', bot({ config, db }));
-
-
-    // api.use('/', api);
-
+    app.use('/api', (0, _index2.default)({ config: _config2.default, db: db }));
 
     app.server.listen(process.env.PORT || _config2.default.port);
 

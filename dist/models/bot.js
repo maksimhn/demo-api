@@ -1,9 +1,11 @@
 'use strict';
 
 Object.defineProperty(exports, "__esModule", {
-  value: true
+    value: true
 });
-var bot = ['new', 'bot'];
+var bot = {
+    greetings: 'Hello, my dear! How can I help you?'
+};
 // const bot = function() {
 //
 // };

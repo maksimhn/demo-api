@@ -8,11 +8,13 @@ var _package = require('../../package.json');
 
 var _express = require('express');
 
-var _bot = require('../models/bot');
+var _index = require('../features/bot/index.js');
 
-var _bot2 = _interopRequireDefault(_bot);
+var _index2 = _interopRequireDefault(_index);
 
 function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+
+// import botActions from "index.js";
 
 exports.default = function (_ref) {
     var config = _ref.config,
@@ -20,14 +22,18 @@ exports.default = function (_ref) {
 
     var api = (0, _express.Router)();
 
-    // api.use('/bot', bot({ config, db }));
-
-    // perhaps expose some API metadata at the root
     api.get('/greeting', function (req, res) {
-        console.log("hm");
-        res.json({ version: _package.version });
+        // console.log(botActions);
+        _index2.default.greetings(req, res);
     });
+
+    api.post('/q', function (req, res) {
+        res.send('Response to Q');
+    });
+
+    api.delete('/clear', function (req, res) {});
 
     return api;
 };
+// import bot from "../models/bot";
 //# sourceMappingURL=bot.js.map
