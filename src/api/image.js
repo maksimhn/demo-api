@@ -1,36 +1,62 @@
 import { Router } from "express";
-import * as path from 'path';
+import path from 'path';
 import multer from 'multer';
-import * as rimraf from 'rimraf';
-import { mkdirSync, existsSync } from 'fs';
+import rimraf from 'rimraf';
+import fs from 'fs';
+import imageProcessing from '../features/image/imageProcessing';
+
 const uploadsDir = path.resolve(__dirname, 'uploads');
 
-export default ({ config, db }) => {
-    if (!existsSync(uploadsDir)) {
-        mkdirSync(uploadsDir);
-    }
+function image({ config, db }) {
+	if (!fs.existsSync(uploadsDir)) {
+		fs.mkdirSync(uploadsDir);
+	}
 
-    let storage = multer.diskStorage({
-        destination: (req, file, cb) => {
-            cb(null, uploadsDir);
-        },
-        filename: (req, file, cb) => {
-            let ext = path.extname(file.originalname);
-            cb(null, `${Math.random().toString(36).substring(7)}${ext}`);
-        }
-    });
+	let storage = multer.diskStorage({
+		destination: (req, file, cb) => {
+			cb(null, uploadsDir);
+		},
+		filename: (req, file, cb) => {
+			cb(null, file.originalname);
+		}
+	});
 
-    let upload = multer({ storage: storage });
-    let api = Router();
+	let upload = multer({ storage: storage });
+	let api = Router();
 
-    api.post('/upload', upload.any(), (req, res) => {
-        res.status(200);
-		deleteAllFiles();
-    });
+	api.post('/upload', upload.any(), (req, res) => {
+		let images = fs.readdirSync(uploadsDir);
+		let editPromises = [];
+		const tempDir = path.resolve(__dirname, req.body.clientId);
 
-    function deleteAllFiles() {
-        rimraf.sync(`${uploadsDir}/**/*`);
-    }
+		if (!fs.existsSync(tempDir)) {
+			fs.mkdirSync(tempDir);
+		}
 
-    return api;
+		images.map(fileName => {
+			let processingPromise = imageProcessing(uploadsDir, fileName, tempDir);
+			editPromises.push(processingPromise);
+		});
+
+		Promise.all(editPromises)
+			.then((result) => {
+				res.sendStatus(200);
+				deleteAllFiles();
+			})
+			.catch(err => {
+				console.log('error is: ', err);
+			});
+	});
+
+	api.get('/download/:clientId/:imageName', (req, res) => {
+		res.sendFile(`${req.params.clientId}/${req.params.imageName}`, { root: __dirname });
+	});
+
+	function deleteAllFiles() {
+		rimraf.sync(`${uploadsDir}/**/*`);
+	}
+
+	return api;
 }
+
+module.exports = image;

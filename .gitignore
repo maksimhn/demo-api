@@ -63,6 +63,7 @@ jspm_packages/
 
 .idea/
 .vs/
+dist/
 
 
 # User-specific stuff:
@@ -123,6 +124,5 @@ fabric.properties
 .idea/sonarlint
 
 # End of https://www.gitignore.io/api/node,webstorm
-dist/
 /.vs/slnx.sqlite
 /.vs
