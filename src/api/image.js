@@ -52,6 +52,10 @@ function image({ config, db }) {
 		res.sendFile(`${req.params.clientId}/${req.params.imageName}`, { root: __dirname });
 	});
 
+	api.post('/archive', (req, res) => {
+		console.log('req!');
+	});
+
 	function deleteAllFiles() {
 		rimraf.sync(`${uploadsDir}/**/*`);
 	}
