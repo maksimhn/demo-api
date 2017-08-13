@@ -4,10 +4,11 @@ import multer from 'multer';
 import rimraf from 'rimraf';
 import fs from 'fs';
 import imageProcessing from '../features/image/imageProcessing';
+import archiverService from '../features/archiver/archiverService';
 
 const uploadsDir = path.resolve(__dirname, 'uploads');
 
-function image({ config, db }) {
+export default function ({ config, db }) {
 	if (!fs.existsSync(uploadsDir)) {
 		fs.mkdirSync(uploadsDir);
 	}
@@ -44,7 +45,7 @@ function image({ config, db }) {
 				deleteAllFiles();
 			})
 			.catch(err => {
-				console.log('error is: ', err);
+				console.log(`error during editing is: ${err}`);
 			});
 	});
 
@@ -53,7 +54,11 @@ function image({ config, db }) {
 	});
 
 	api.post('/archive', (req, res) => {
-		console.log('req!');
+		let clientId = req.body.clientId;
+		let output = archiverService(`${__dirname}/${clientId}`, req.body.imagesNames, `archive-${clientId}.zip`, res);
+		output.on('close', () => {
+			res.download(`${__dirname}/${clientId}/archive-${clientId}.zip`);
+		});
 	});
 
 	function deleteAllFiles() {
@@ -62,5 +67,3 @@ function image({ config, db }) {
 
 	return api;
 }
-
-module.exports = image;
